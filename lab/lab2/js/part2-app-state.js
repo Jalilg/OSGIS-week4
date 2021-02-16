@@ -33,19 +33,42 @@
 ===================== */
 
 // Use the data source URL from lab 1 in this 'ajax' function:
-var downloadData = $.ajax("http://");
+var downloadData = $.ajax("https://raw.githubusercontent.com/CPLN692-MUSA611-Open-Source-GIS/datasets/master/json/philadelphia-solar-installations.json");
 
 // Write a function to prepare your data (clean it up, organize it
 // as you like, create fields, etc)
-var parseData = function() {};
+
+var parseData = function (data) {return JSON.parse(data)};
+
+/* var parseData = (data) => {data.done( (arg) => { console.log(arg)
+  JSON.parse(arg)}) 
+}; 
+ */
+/* var parseData = (data) => {data.done( (arg) => { console.log(arg)
+  var parsedArg = JSON.parse(arg)}) 
+}; 
+ */
+
+//What does the word "promise" mean from lab 2 part? it
 
 // Write a function to use your parsed data to create a bunch of
 // marker objects (don't plot them!)
-var makeMarkers = function() {};
+//var makeMarkers = function(installation) {installation.forEach (L.marker([installation.LAT, installation.LONG_]))};
+
+  var makeMarkers = function (array){
+    return array.map( function (x) { 
+      return L.marker([x.LAT, x.LONG_])
+    })
+  };
+
 
 // Now we need a function that takes this collection of markers
 // and puts them on the map
-var plotMarkers = function() {};
+var plotMarkers = function(markers) {
+  markers.forEach( function (x) {
+    x.addTo(map)
+  })
+};
 
 // At this point you should see a bunch of markers on your map if
 // things went well.
@@ -66,8 +89,11 @@ var plotMarkers = function() {};
 
 // Look to the bottom of this file and try to reason about what this
 // function should look like
-var removeMarkers = function() {};
-
+var removeMarkers = function(markers) {
+  markers.forEach( function (x) {
+    map.removeLayer(x)
+  })
+};
 /* =====================
  Leaflet setup - feel free to ignore this
 ===================== */
@@ -90,7 +116,11 @@ var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/ton
 
 downloadData.done(function(data) {
   var parsed = parseData(data);
+  console.log(parsed)
   var markers = makeMarkers(parsed);
+  console.log(markers);
   plotMarkers(markers);
-  removeMarkers(markers);
-});
+  //removeMarkers(markers);
+
+}
+);
